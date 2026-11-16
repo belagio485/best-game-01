@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Starlight Relay</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="app">
+  <header id="hud">
+    <div class="brand">STARLIGHT RELAY</div>
+    <div class="hud-pills">
+      <div class="pill"><span class="pill-label">Level</span><span id="hud-level">Level 1 · First Light</span></div>
+      <div class="pill"><span class="pill-label">Lanterns</span><span id="hud-lanterns">0 / 2</span></div>
+      <div class="pill"><span class="pill-label">Moves</span><span id="hud-moves">3</span></div>
+      <div class="pill"><span class="pill-label">Score</span><span id="hud-score">0</span></div>
+    </div>
+    <div class="hud-buttons">
+      <button id="btn-restart" class="btn btn-small" type="button">Restart</button>
+      <button id="btn-sound" class="btn btn-small" type="button">Sound: On</button>
+      <button id="btn-menu" class="btn btn-small" type="button">Menu</button>
+    </div>
+  </header>
+
+  <main>
+    <aside id="sidebar">
+      <div class="card">
+        <h2 id="side-name">Level 1: First Light</h2>
+        <p id="side-goal">Click the mirror to turn the beam up to the lantern.</p>
+      </div>
+      <div class="card">
+        <h2>Spare pieces</h2>
+        <p class="card-note">Select one, then click an empty cell to place it. Right-click a placed piece to pick it back up.</p>
+        <button id="inv-mirror" class="tray-btn" type="button">
+          <span class="tray-glyph"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="4" fill="rgba(170,205,255,0.12)" stroke="rgba(190,215,255,0.5)"/><line x1="6" y1="16" x2="16" y2="6" stroke="#eaf6ff" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+          <span>Mirror</span>
+          <span id="inv-mirror-count">× 0</span>
+        </button>
+        <button id="inv-splitter" class="tray-btn" type="button">
+          <span class="tray-glyph"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="4" fill="rgba(170,205,255,0.12)" stroke="rgba(190,215,255,0.5)"/><line x1="6" y1="16" x2="16" y2="6" stroke="#eaf6ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="11" cy="11" r="3" fill="#ffd166"/></svg></span>
+          <span>Splitter</span>
+          <span id="inv-splitter-count">× 0</span>
+        </button>
+      </div>
+      <div class="card">
+        <h2>Legend</h2>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 2 L13 9 L20 11 L13 13 L11 20 L9 13 L2 11 L9 9 Z" fill="#fff3cf" stroke="#ffd166"/></svg><span><b>Star</b> — fires the beam</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="4" fill="rgba(170,205,255,0.12)" stroke="rgba(190,215,255,0.5)"/><line x1="6" y1="16" x2="16" y2="6" stroke="#eaf6ff" stroke-width="2.5" stroke-linecap="round"/></svg><span><b>Mirror</b> — turns the beam</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="2" y="2" width="18" height="18" rx="4" fill="rgba(170,205,255,0.12)" stroke="rgba(190,215,255,0.5)"/><line x1="6" y1="16" x2="16" y2="6" stroke="#eaf6ff" stroke-width="2.5" stroke-linecap="round"/><circle cx="11" cy="11" r="3" fill="#ffd166"/></svg><span><b>Splitter</b> — beam goes two ways</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><path d="M11 3 L19 18 L3 18 Z" fill="#53e9ff" stroke="#d8f8ff"/></svg><span><b>Prism</b> — tints the beam</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="12" r="6" fill="#ffd166" stroke="#fff6dd" stroke-width="1.5"/><rect x="9" y="2" width="4" height="4" rx="1" fill="#8a94c4"/></svg><span><b>Lantern</b> — light them all</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><rect x="3" y="3" width="16" height="16" rx="3" fill="#2a3357" stroke="rgba(180,195,255,0.4)"/></svg><span><b>Wall</b> — stops the beam</span></div>
+        <div class="legend-row"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="7" fill="#0d0a1e" stroke="#966eff"/></svg><span><b>Gloom</b> — swallows the beam</span></div>
+      </div>
+    </aside>
+    <div id="board-wrap">
+      <canvas id="board" width="720" height="720"></canvas>
+    </div>
+  </main>
+
+  <footer id="hints">Click a mirror to rotate it &nbsp;·&nbsp; Arrows move the cursor, Space rotates &nbsp;·&nbsp; F places a spare piece &nbsp;·&nbsp; R restarts &nbsp;·&nbsp; P pauses &nbsp;·&nbsp; M mutes</footer>
+</div>
+
+<div id="overlay-title" class="overlay hidden">
+  <div class="panel panel-title">
+    <div class="title-kicker">A game of mirrors and moonlight</div>
+    <h1 class="title-main">STARLIGHT<br>RELAY</h1>
+    <p class="title-tag">Turn mirrors. Bend starlight. Wake every lantern before your moves run out.</p>
+    <button id="btn-start" class="btn btn-primary btn-big" type="button">Begin the Relay</button>
+    <button id="btn-how" class="btn btn-ghost" type="button">How to play</button>
+    <div id="howto" class="howto hidden">
+      <p>Click a mirror or splitter to turn it. The beam from the star bends, splits and tints as it crosses the board.</p>
+      <p>Light every lantern to clear the level. Coloured lanterns need a beam of the same colour. Walls stop the beam, gloom swallows it, and every turn or placement costs one move.</p>
+      <p>Keyboard: arrows move the cursor, Space rotates, F places a spare piece, R restarts the level, P pauses, M mutes.</p>
+    </div>
+    <div class="levels-block">
+      <div class="levels-label">Levels</div>
+      <div id="level-select" class="levels-row">
+        <button class="lvl-btn" data-level="0" type="button">1</button>
+        <button class="lvl-btn" data-level="1" type="button">2</button>
+        <button class="lvl-btn" data-level="2" type="button">3</button>
+        <button class="lvl-btn" data-level="3" type="button">4</button>
+        <button class="lvl-btn" data-level="4" type="button">5</button>
+        <button class="lvl-btn" data-level="5" type="button">6</button>
+      </div>
+    </div>
+    <div class="best-line">Best score: <span id="best-score">0</span></div>
+  </div>
+</div>
+
+<div id="overlay-pause" class="overlay hidden">
+  <div class="panel">
+    <h2>Paused</h2>
+    <p>The star waits for you.</p>
+    <div class="btn-row"><button id="btn-resume" class="btn btn-primary" type="button">Resume</button></div>
+    <div class="btn-row"><button id="btn-restart-pause" class="btn btn-ghost" type="button">Restart level</button><button id="btn-menu-pause" class="btn btn-ghost" type="button">Menu</button></div>
+  </div>
+</div>
+
+<div id="overlay-clear" class="overlay hidden">
+  <div class="panel">
+    <h2>Level Clear!</h2>
+    <div id="clear-stars" class="stars">★★★</div>
+    <div id="clear-lines" class="score-lines"></div>
+    <div class="score-row total"><span>Total score</span><span id="clear-total">0</span></div>
+    <div class="btn-row"><button id="btn-next" class="btn btn-primary" type="button">Next level</button></div>
+    <div class="btn-row"><button id="btn-replay-clear" class="btn btn-ghost" type="button">Replay</button><button id="btn-menu-clear" class="btn btn-ghost" type="button">Menu</button></div>
+  </div>
+</div>
+
+<div id="overlay-gameclear" class="overlay hidden">
+  <div class="panel">
+    <h2>The Relay is Lit!</h2>
+    <p>Every lantern in the hollow burns bright. The night is yours.</p>
+    <div class="score-row total"><span>Final score</span><span id="gameclear-total">0</span></div>
+    <div class="score-row"><span>Best score</span><span id="gameclear-best">0</span></div>
+    <div class="btn-row"><button id="btn-again" class="btn btn-primary" type="button">Play Again</button><button id="btn-menu-gameclear" class="btn btn-ghost" type="button">Menu</button></div>
+  </div>
+</div>
+
+<div id="overlay-fail" class="overlay hidden">
+  <div class="panel">
+    <h2>Out of Moves</h2>
+    <p>The light faded before every lantern woke. Try a different path.</p>
+    <div class="btn-row"><button id="btn-retry" class="btn btn-primary" type="button">Retry Level</button><button id="btn-menu-fail" class="btn btn-ghost" type="button">Menu</button></div>
+  </div>
+</div>
+
+<script type="module" src="boot.js"></script>
+</body>
+</html>
